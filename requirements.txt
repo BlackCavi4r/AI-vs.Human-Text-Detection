@@ -1,0 +1,13 @@
+streamlit
+pandas
+openpyxl
+numpy
+scipy
+scikit-learn>=1.4
+matplotlib
+plotly
+gensim
+torch
+joblib
+python-docx
+pdfplumber

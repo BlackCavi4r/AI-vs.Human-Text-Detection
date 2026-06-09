@@ -1,0 +1,31 @@
+Demo video outline (3 to 5 minutes)
+
+1. Start with the project folder
+- Show the files: app.py, train_models.py, README.md, models, notebooks, reports, and sample_docs.
+- Mention that labels are 0 for Human and 1 for AI.
+
+2. Run the app
+- In the terminal, run: streamlit run app.py
+- Open the local Streamlit link.
+
+3. Test a human-written sample
+- Upload or paste sample_docs/human_sample.txt.
+- Choose SVM first.
+- Point out the prediction, AI detection score, human score, and confidence.
+
+4. Test an AI-written sample
+- Upload or paste sample_docs/ai_sample.txt.
+- Use SVM again.
+- Show that the AI detection score is much higher.
+
+5. Show model comparison
+- Scroll to the side-by-side model comparison.
+- Mention that the same text is tested against all six models.
+
+6. Show notebook/report results
+- Open notebooks/project1_notebook.ipynb or reports/model_comparison.csv.
+- Briefly explain that SVM was the best saved model, followed by AdaBoost, FNN, and CNN.
+
+7. Download report
+- Click Download analysis report in the app.
+- Mention that the report includes the chosen model, scores, text statistics, and model comparison.
