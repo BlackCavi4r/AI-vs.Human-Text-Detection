@@ -1,15 +1,29 @@
-# Project 1 | AI vs. Human Text Detection
+# Project 2 | AI vs. Human Text Detection with LLM Explanations
 
 https://ai-vs-human-text-detection-ocwenwd28inzfhzhpkxajg.streamlit.app/
 
-This is my Project 1 app for detecting whether a text sample looks human-written or AI-written.
+This project detects whether a text sample looks human-written or AI-written. It continues my Project 1 machine learning app and extends it for Project 2 by adding Hugging Face Large Language Models (LLMs) that explain the classifier result.
 
-The app lets a user paste text or upload a PDF, Word document, or TXT file. Then the user can choose one of the trained models and get a prediction, an AI score, a human score, text statistics, a simple explanation, model comparison, and a downloadable report.
+The app lets a user paste text or upload a PDF, Word document, or TXT file. Then the user can choose one of the trained models and get a prediction, an AI score, a human score, text statistics, model comparison, LLM-generated explanation, and a downloadable report.
 
 Labels used in the dataset:
 
 - `0` = Human-written text
 - `1` = AI-written text
+
+## Project 2 LLM extension
+
+The original Project 1 classifiers remain part of the app. Project 2 adds two Hugging Face LLMs:
+
+1. `Qwen/Qwen2.5-0.5B-Instruct` - creates a structured explanation of the selected classifier result.
+2. `HuggingFaceTB/SmolLM2-360M-Instruct` - provides a second-opinion writing-style review.
+
+The Streamlit interface includes two LLM modes:
+
+- **Fast: selected LLM** - runs one selected LLM for a quicker explanation.
+- **Full: compare both LLMs** - runs both integrated LLMs so the user can compare explanations.
+
+The LLMs are loaded only after the user clicks **Generate LLM explanation**, so the regular classifier prediction still loads quickly.
 
 ## Folder structure
 
@@ -87,6 +101,18 @@ Run the app:
 streamlit run app.py
 ```
 
+The first LLM explanation may take longer because the Hugging Face model files must be downloaded and cached.
+
+## Hugging Face Spaces deployment
+
+This app is ready for a Hugging Face Spaces Streamlit deployment:
+
+1. Create a new Space at `https://huggingface.co/spaces`.
+2. Choose **Streamlit** as the SDK.
+3. Upload the source files, `models/`, `reports/`, `sample_docs/`, `app.py`, `project_utils.py`, `llm_explanations.py`, `requirements.txt`, and `README.md`.
+4. Wait for the Space build to install dependencies from `requirements.txt`.
+5. Open the public Space link and test text input, document upload, classifier prediction, and both LLM explanation modes.
+
 ## How to retrain the models
 
 The saved models are already included in the `models/` folder. To retrain them:
@@ -122,6 +148,11 @@ Deep learning:
 6. CNN for text
 
 The deep learning models are saved as PyTorch `.pt` files.
+
+LLM models:
+
+7. Qwen2.5 0.5B Instruct (`Qwen/Qwen2.5-0.5B-Instruct`)
+8. SmolLM2 360M Instruct (`HuggingFaceTB/SmolLM2-360M-Instruct`)
 
 ## Model tuning
 
@@ -176,6 +207,8 @@ The app shows three main numbers:
 
 A text can be predicted as Human and still have a high confidence score. That does not mean it is AI. The AI detection score is the number to look at for that.
 
+The LLM explanations are meant to make the result easier to understand. They do not replace the classifier score. They can also be wrong, so the final app presents them as supporting explanations instead of absolute proof.
+
 ## Test files
 
 I included two files in `sample_docs/`:
@@ -189,4 +222,6 @@ For the demo video, I would test with the SVM model first because it has the bes
 
 I started with TF-IDF because it is simple and strong for text classification. I added linguistic features because they make the prediction easier to explain. For the deep learning part, I used PyTorch because the model files are easy to save and load in the Streamlit app.
 
-I would not treat this app as a perfect AI detector. It is better as a comparison project that shows how different ML and DL models behave on the same classification task.
+For Project 2, I added two smaller Hugging Face LLMs because they are practical for a public demo and can run within normal Hugging Face Spaces limits. The LLMs explain why the classifier may have predicted AI-written or human-written text, point out writing signals, and remind the user that AI detection is probabilistic.
+
+I would not treat this app as a perfect AI detector. It is better as a comparison project that shows how different ML, DL, and LLM components behave on the same classification task.

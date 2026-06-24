@@ -1,6 +1,7 @@
 import io
 import json
 import pickle
+import hashlib
 from pathlib import Path
 
 import joblib
@@ -9,6 +10,12 @@ import pandas as pd
 import streamlit as st
 from scipy.sparse import csr_matrix, hstack
 
+from llm_explanations import (
+    LLM_OPTIONS,
+    format_llm_outputs_for_report,
+    generate_llm_explanation,
+    model_label,
+)
 from project_utils import (
     clean_text,
     compute_linguistic_features,
@@ -246,7 +253,7 @@ def run_all_model_predictions(text, ml_artifacts, dl_artifacts):
     return pd.DataFrame(rows)
 
 
-def create_report(text, selected_model, prediction_label, prob_ai, confidence, comparison_df, stats_df):
+def create_report(text, selected_model, prediction_label, prob_ai, confidence, comparison_df, stats_df, llm_outputs=None):
     lines = []
     lines.append("AI vs Human Text Detection Report")
     lines.append("=" * 36)
@@ -267,11 +274,20 @@ def create_report(text, selected_model, prediction_label, prob_ai, confidence, c
         lines.append(comparison_df.to_string(index=False))
     else:
         lines.append("No model comparison available.")
+    llm_report = format_llm_outputs_for_report(llm_outputs or {})
+    if llm_report:
+        lines.append("")
+        lines.append(llm_report)
     lines.append("")
     lines.append("Analyzed text preview")
     lines.append("-" * 21)
     lines.append(clean_text(text)[:1200])
     return "\n".join(lines)
+
+
+def analysis_signature(text, selected_model, prediction_label, prob_ai, confidence):
+    raw = f"{selected_model}|{prediction_label}|{prob_ai:.6f}|{confidence:.6f}|{clean_text(text)}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
 st.set_page_config(page_title="AI vs Human Text Detector", layout="wide")
@@ -330,13 +346,13 @@ with left:
 with right:
     st.subheader("Text statistics")
     stats_df = simple_text_explanation(text)
-    st.dataframe(stats_df, hide_index=True, use_container_width=True)
+    st.dataframe(stats_df, hide_index=True, width="stretch")
 
 st.subheader("Explanation")
 if selected_model in ML_MODEL_FILES and X_single is not None:
     explanation_df = explain_ml_prediction(text, selected_model, ml_artifacts, X_single)
     if not explanation_df.empty:
-        st.dataframe(explanation_df, hide_index=True, use_container_width=True)
+        st.dataframe(explanation_df, hide_index=True, width="stretch")
     else:
         st.write("This model does not expose detailed feature weights. The text statistics above provide the main explanation signals.")
 else:
@@ -344,12 +360,68 @@ else:
 
 st.subheader("Side-by-side model comparison on this text")
 current_comparison = run_all_model_predictions(text, ml_artifacts, dl_artifacts)
-st.dataframe(current_comparison, hide_index=True, use_container_width=True)
+st.dataframe(current_comparison, hide_index=True, width="stretch")
+
+st.subheader("LLM explanation")
+st.caption(
+    "Project 2 LLM extension: run one Hugging Face LLM for a fast explanation, "
+    "or compare both integrated LLMs for a stronger project demo."
+)
+
+llm_signature = analysis_signature(text, selected_model, label, prob_ai, confidence)
+stored_llm = st.session_state.get("llm_analysis", {})
+if stored_llm.get("signature") != llm_signature:
+    current_llm_outputs = {}
+else:
+    current_llm_outputs = stored_llm.get("outputs", {})
+
+llm_mode = st.radio(
+    "LLM analysis mode",
+    ["Fast: selected LLM", "Full: compare both LLMs"],
+    horizontal=True,
+)
+selected_llm = st.selectbox(
+    "Choose LLM",
+    list(LLM_OPTIONS.keys()),
+    format_func=model_label,
+    disabled=llm_mode == "Full: compare both LLMs",
+)
+
+if st.button("Generate LLM explanation", type="primary"):
+    target_models = list(LLM_OPTIONS.keys()) if llm_mode == "Full: compare both LLMs" else [selected_llm]
+    generated_outputs = {}
+    for model_id in target_models:
+        with st.spinner(f"Loading and running {LLM_OPTIONS[model_id]['display_name']}..."):
+            try:
+                generated_outputs[model_id] = generate_llm_explanation(
+                    model_id=model_id,
+                    text=text,
+                    classifier_name=selected_model,
+                    prediction_label=label,
+                    prob_ai=prob_ai,
+                    confidence=confidence,
+                    stats_df=stats_df,
+                    comparison_df=current_comparison,
+                )
+            except Exception as exc:
+                generated_outputs[model_id] = f"Could not generate explanation with this LLM: {exc}"
+    current_llm_outputs = generated_outputs
+    st.session_state["llm_analysis"] = {
+        "signature": llm_signature,
+        "outputs": current_llm_outputs,
+    }
+
+if current_llm_outputs:
+    for model_id, explanation in current_llm_outputs.items():
+        with st.expander(model_label(model_id), expanded=True):
+            st.write(explanation)
+else:
+    st.info("Click the button above to generate an LLM explanation. The first run may take longer while the model downloads.")
 
 st.subheader("Training-set model comparison")
 if metrics_df is not None:
     show_cols = [c for c in ["model", "accuracy", "precision", "recall", "f1", "roc_auc", "training_seconds"] if c in metrics_df.columns]
-    st.dataframe(metrics_df[show_cols], hide_index=True, use_container_width=True)
+    st.dataframe(metrics_df[show_cols], hide_index=True, width="stretch")
 else:
     st.write("No saved training metrics found yet.")
 
@@ -359,7 +431,7 @@ with st.expander("Project notes"):
         "AI detection score means the estimated probability for label 1. Confidence means confidence in the final predicted label."
     )
 
-report_text = create_report(text, selected_model, label, prob_ai, confidence, current_comparison, stats_df)
+report_text = create_report(text, selected_model, label, prob_ai, confidence, current_comparison, stats_df, current_llm_outputs)
 st.download_button(
     label="Download analysis report",
     data=report_text,
