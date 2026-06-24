@@ -16,7 +16,7 @@ Use this checklist before submitting on Canvas.
 - [x] Include `requirements.txt`.
 - [x] Include `README.md`.
 - [x] Prepare for Hugging Face Spaces deployment.
-- [ ] Add the final public Hugging Face Spaces URL after deployment.
+- [x] Add the final public Hugging Face Spaces URL after deployment.
 - [ ] Record and submit a 5-10 minute demo video.
 
 ## Files to Include in the Canvas ZIP
@@ -25,6 +25,7 @@ Use this checklist before submitting on Canvas.
 - `llm_explanations.py`
 - `project_utils.py`
 - `train_models.py`
+- `Dockerfile`
 - `requirements.txt`
 - `requirements-training.txt`
 - `README.md`
@@ -53,18 +54,18 @@ The Hugging Face CLI is not currently logged in on this machine. To deploy from 
 .\.venv\Scripts\hf.exe auth login
 ```
 
-Then create a Streamlit Space from the Hugging Face website or with the CLI. After the Space is live, update the README with the public Space URL.
+Then create a Docker Space from the Hugging Face website or with the CLI. The Docker Space runs the Streamlit app on port `7860`.
 
 Suggested CLI flow:
 
 ```powershell
 .\.venv\Scripts\hf.exe auth login
-.\.venv\Scripts\hf.exe repo create BlackCavi4r/AI-vs-Human-Text-Detection --repo-type space --space_sdk streamlit --exist-ok
-.\.venv\Scripts\hf.exe upload BlackCavi4r/AI-vs-Human-Text-Detection . . --repo-type space --commit-message "Deploy Project 2 Streamlit app" --exclude ".git/*" ".venv/*" ".ruff_cache/*" "__pycache__/*" "*.pyc" "BlackCavi4r_AI-vs.Human-Text-Detection.mp4"
+.\.venv\Scripts\hf.exe repo create Caviar22/AI-vs-Human-Text-Detection --repo-type space --space_sdk docker --exist-ok
+.\.venv\Scripts\hf.exe upload Caviar22/AI-vs-Human-Text-Detection . . --repo-type space --commit-message "Deploy Project 2 Streamlit app" --exclude ".git/*" ".venv/*" ".ruff_cache/*" "__pycache__/*" "*.pyc" "BlackCavi4r_AI-vs.Human-Text-Detection.mp4" "outputs/*"
 ```
 
 Expected public URL:
 
 ```text
-https://huggingface.co/spaces/BlackCavi4r/AI-vs-Human-Text-Detection
+https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
 ```

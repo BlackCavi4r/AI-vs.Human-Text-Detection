@@ -3,9 +3,7 @@ title: AI vs Human Text Detection
 emoji: 🧠
 colorFrom: blue
 colorTo: indigo
-sdk: streamlit
-sdk_version: 1.58.0
-app_file: app.py
+sdk: docker
 pinned: false
 ---
 
@@ -115,15 +113,16 @@ The first LLM run can take longer because the model files are downloaded and cac
 
 ## Hugging Face Spaces Deployment
 
-This repository is prepared for a Streamlit Space.
+This repository is prepared for a Hugging Face Docker Space that runs the Streamlit app on port `7860`.
 
 Steps:
 
 1. Go to `https://huggingface.co/spaces`.
 2. Create a new Space.
-3. Select **Streamlit** as the SDK.
+3. Select **Docker** as the SDK.
 4. Upload or sync this project.
 5. Make sure the Space includes:
+   - `Dockerfile`
    - `app.py`
    - `llm_explanations.py`
    - `project_utils.py`
@@ -138,7 +137,7 @@ Steps:
 Public Space link:
 
 ```text
-Add the Hugging Face Spaces URL here after deployment.
+https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
 ```
 
 ## Files and Folders
@@ -149,6 +148,7 @@ ai_human_detection_project/
 |-- llm_explanations.py
 |-- project_utils.py
 |-- train_models.py
+|-- Dockerfile
 |-- requirements.txt
 |-- requirements-training.txt
 |-- README.md
