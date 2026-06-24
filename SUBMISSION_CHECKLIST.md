@@ -54,3 +54,17 @@ The Hugging Face CLI is not currently logged in on this machine. To deploy from 
 ```
 
 Then create a Streamlit Space from the Hugging Face website or with the CLI. After the Space is live, update the README with the public Space URL.
+
+Suggested CLI flow:
+
+```powershell
+.\.venv\Scripts\hf.exe auth login
+.\.venv\Scripts\hf.exe repo create BlackCavi4r/AI-vs-Human-Text-Detection --repo-type space --space_sdk streamlit --exist-ok
+.\.venv\Scripts\hf.exe upload BlackCavi4r/AI-vs-Human-Text-Detection . . --repo-type space --commit-message "Deploy Project 2 Streamlit app" --exclude ".git/*" ".venv/*" ".ruff_cache/*" "__pycache__/*" "*.pyc" "BlackCavi4r_AI-vs.Human-Text-Detection.mp4"
+```
+
+Expected public URL:
+
+```text
+https://huggingface.co/spaces/BlackCavi4r/AI-vs-Human-Text-Detection
+```
