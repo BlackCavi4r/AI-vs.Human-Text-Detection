@@ -293,7 +293,9 @@ def analysis_signature(text, selected_model, prediction_label, prob_ai, confiden
 st.set_page_config(page_title="AI vs Human Text Detector", layout="wide")
 
 st.title("AI vs. Human Text Detection")
-st.caption("Upload a document or paste text, choose a model, and check whether it looks human-written or AI-written.")
+st.caption(
+    "Paste text or upload a document, then compare how different models judge whether the writing looks human-written or AI-written."
+)
 
 ml_artifacts = load_ml_artifacts()
 dl_artifacts = load_deep_artifacts()
@@ -311,19 +313,25 @@ if dl_artifacts:
 
 with st.sidebar:
     st.header("Input")
-    uploaded = st.file_uploader("Upload PDF, Word, or TXT", type=["pdf", "docx", "txt"])
-    selected_model = st.selectbox("Choose classifier", available_models)
+    uploaded = st.file_uploader("Upload a PDF, Word document, or TXT file", type=["pdf", "docx", "txt"])
+    selected_model = st.selectbox("Choose the main classifier", available_models)
     st.divider()
     st.markdown("**Labels**")
     st.write("0 = Human-written text")
     st.write("1 = AI-written text")
+    st.caption("The labels come from the training dataset. The app reports probabilities, not final proof.")
 
 uploaded_text = extract_text_from_upload(uploaded)
-manual_text = st.text_area("Paste text directly", value=uploaded_text, height=220, placeholder="Paste a paragraph, essay, or document text here...")
+manual_text = st.text_area(
+    "Paste text directly",
+    value=uploaded_text,
+    height=220,
+    placeholder="Paste an essay, paragraph, or document section here...",
+)
 text = clean_text(manual_text)
 
 if len(text.strip()) < 20:
-    st.info("Add at least a few sentences before running a prediction.")
+    st.info("Add a few sentences first. Very short text does not give the models enough evidence.")
     st.stop()
 
 left, right = st.columns([1, 1])
@@ -341,7 +349,10 @@ with left:
     st.metric("Human score", f"{(1 - prob_ai) * 100:.2f}%")
     st.metric("Confidence in result", f"{confidence * 100:.2f}%")
     st.progress(float(confidence))
-    st.caption("Confidence is the model's certainty in the predicted label. A high confidence score can happen for either Human or AI.")
+    st.caption(
+        "Confidence means how strongly the selected model leans toward its predicted label. "
+        "The AI detection score is the number to watch when asking how AI-like the text looks."
+    )
 
 with right:
     st.subheader("Text statistics")
@@ -356,7 +367,10 @@ if selected_model in ML_MODEL_FILES and X_single is not None:
     else:
         st.write("This model does not expose detailed feature weights. The text statistics above provide the main explanation signals.")
 else:
-    st.write("Deep learning models are less directly interpretable, so this app explains the prediction using the text statistics and model comparison below.")
+    st.write(
+        "Deep learning models are harder to explain directly, so the app uses the text statistics, "
+        "the model comparison, and the LLM explanation section below to make the result easier to understand."
+    )
 
 st.subheader("Side-by-side model comparison on this text")
 current_comparison = run_all_model_predictions(text, ml_artifacts, dl_artifacts)
@@ -364,8 +378,8 @@ st.dataframe(current_comparison, hide_index=True, width="stretch")
 
 st.subheader("LLM explanation")
 st.caption(
-    "Project 2 LLM extension: run one Hugging Face LLM for a fast explanation, "
-    "or compare both integrated LLMs for a stronger project demo."
+    "Project 2 extension: use one Hugging Face LLM for a quick explanation, "
+    "or run both LLMs to compare how they explain the same prediction."
 )
 
 llm_signature = analysis_signature(text, selected_model, label, prob_ai, confidence)
@@ -428,7 +442,8 @@ else:
 with st.expander("Project notes"):
     st.write(
         "The ML models use TF-IDF plus writing-style features. The deep learning models use tokenized text sequences. "
-        "AI detection score means the estimated probability for label 1. Confidence means confidence in the final predicted label."
+        "The LLMs do not make the final classification; they explain the classifier result in a more readable way. "
+        "Because AI detection is probabilistic, the output should be treated as a signal, not as proof."
     )
 
 report_text = create_report(text, selected_model, label, prob_ai, confidence, current_comparison, stats_df, current_llm_outputs)
