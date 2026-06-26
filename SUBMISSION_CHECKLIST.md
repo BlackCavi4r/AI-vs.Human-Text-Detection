@@ -6,7 +6,7 @@ Use this checklist before submitting on Canvas.
 
 - [x] Continue Project 1 idea.
 - [x] Keep the original machine/deep learning pipeline working.
-- [x] Add at least two Hugging Face LLMs. This version includes three.
+- [x] Add at least two Hugging Face LLMs.
 - [x] Use Streamlit or Gradio.
 - [x] Support direct text input.
 - [x] Support document upload.

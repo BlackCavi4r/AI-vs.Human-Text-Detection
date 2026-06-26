@@ -15,11 +15,6 @@ LLM_OPTIONS = {
         "task": "text-generation",
         "purpose": "Second-opinion writing-style review",
     },
-    "TinyLlama/TinyLlama-1.1B-Chat-v1.0": {
-        "display_name": "TinyLlama 1.1B Chat",
-        "task": "text-generation",
-        "purpose": "Plain-English reviewer for non-technical users",
-    },
 }
 
 
@@ -100,7 +95,7 @@ Keep the response under 180 words.
 Answer with exactly 3 bullets:"""
 
 
-@lru_cache(maxsize=3)
+@lru_cache(maxsize=2)
 def load_llm_pipeline(model_id: str):
     if model_id not in LLM_OPTIONS:
         raise ValueError(f"Unsupported LLM model: {model_id}")
