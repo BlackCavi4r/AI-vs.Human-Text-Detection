@@ -29,7 +29,6 @@ Use this checklist before submitting on Canvas.
 - `requirements.txt`
 - `requirements-training.txt`
 - `README.md`
-- `DEMO_SCRIPT.md`
 - `SUBMISSION_CHECKLIST.md`
 - `models/`
 - `reports/`
