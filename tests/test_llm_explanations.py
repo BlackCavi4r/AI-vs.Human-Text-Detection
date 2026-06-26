@@ -3,6 +3,7 @@ import unittest
 import pandas as pd
 
 from llm_explanations import (
+    LLM_OPTIONS,
     build_llm_prompt,
     format_llm_outputs_for_report,
     trim_text_for_prompt,
@@ -10,6 +11,12 @@ from llm_explanations import (
 
 
 class LLMExplanationTests(unittest.TestCase):
+    def test_three_llm_options_are_available(self):
+        self.assertIn("Qwen/Qwen2.5-0.5B-Instruct", LLM_OPTIONS)
+        self.assertIn("HuggingFaceTB/SmolLM2-360M-Instruct", LLM_OPTIONS)
+        self.assertIn("TinyLlama/TinyLlama-1.1B-Chat-v1.0", LLM_OPTIONS)
+        self.assertEqual(len(LLM_OPTIONS), 3)
+
     def test_trim_text_for_prompt_short_text_is_unchanged(self):
         text = "This is a short paragraph."
 
@@ -61,6 +68,7 @@ class LLMExplanationTests(unittest.TestCase):
         outputs = {
             "Qwen/Qwen2.5-0.5B-Instruct": "Explanation two.",
             "HuggingFaceTB/SmolLM2-360M-Instruct": "Explanation three.",
+            "TinyLlama/TinyLlama-1.1B-Chat-v1.0": "Explanation four.",
         }
 
         report = format_llm_outputs_for_report(outputs)
@@ -69,6 +77,8 @@ class LLMExplanationTests(unittest.TestCase):
         self.assertIn("Explanation two.", report)
         self.assertIn("HuggingFaceTB/SmolLM2-360M-Instruct", report)
         self.assertIn("Explanation three.", report)
+        self.assertIn("TinyLlama/TinyLlama-1.1B-Chat-v1.0", report)
+        self.assertIn("Explanation four.", report)
 
 
 if __name__ == "__main__":
