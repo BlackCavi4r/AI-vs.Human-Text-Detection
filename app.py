@@ -379,7 +379,7 @@ st.dataframe(current_comparison, hide_index=True, width="stretch")
 st.subheader("LLM explanation")
 st.caption(
     "Project 2 extension: use one Hugging Face LLM for a quick explanation, "
-    "or run both LLMs to compare how they explain the same prediction."
+    "or run all three LLMs to compare how they explain the same prediction."
 )
 
 llm_signature = analysis_signature(text, selected_model, label, prob_ai, confidence)
@@ -391,18 +391,18 @@ else:
 
 llm_mode = st.radio(
     "LLM analysis mode",
-    ["Fast: selected LLM", "Full: compare both LLMs"],
+    ["Fast: selected LLM", "Full: compare all LLMs"],
     horizontal=True,
 )
 selected_llm = st.selectbox(
     "Choose LLM",
     list(LLM_OPTIONS.keys()),
     format_func=model_label,
-    disabled=llm_mode == "Full: compare both LLMs",
+    disabled=llm_mode == "Full: compare all LLMs",
 )
 
 if st.button("Generate LLM explanation", type="primary"):
-    target_models = list(LLM_OPTIONS.keys()) if llm_mode == "Full: compare both LLMs" else [selected_llm]
+    target_models = list(LLM_OPTIONS.keys()) if llm_mode == "Full: compare all LLMs" else [selected_llm]
     generated_outputs = {}
     for model_id in target_models:
         with st.spinner(f"Loading and running {LLM_OPTIONS[model_id]['display_name']}..."):

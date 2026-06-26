@@ -41,15 +41,16 @@ The app also runs the same text through the other saved models. This is useful b
 
 ## 6. Project 2 LLM Extension
 
-For Project 2, I added two Hugging Face LLMs:
+For Project 2, I added three Hugging Face LLMs:
 
 - Qwen2.5 0.5B Instruct
 - SmolLM2 360M Instruct
+- TinyLlama 1.1B Chat
 
 The app has two modes:
 
 - Fast mode runs one selected LLM.
-- Full mode runs both LLMs so the explanations can be compared.
+- Full mode runs all three LLMs so the explanations can be compared.
 
 The LLMs do not replace the classifier. They explain why the classifier may have made the prediction, which writing signals matter, and why the user should treat the result as probabilistic.
 
@@ -63,4 +64,4 @@ The main thing I learned is that prediction and explanation are different. The S
 
 ## 9. Closing
 
-This completes my Project 2 app. It keeps the Project 1 classifiers, adds two meaningful LLM integrations, provides a Streamlit interface, and is prepared for deployment on Hugging Face Spaces.
+This completes my Project 2 app. It keeps the Project 1 classifiers, adds three meaningful LLM integrations, provides a Streamlit interface, and is prepared for deployment on Hugging Face Spaces.

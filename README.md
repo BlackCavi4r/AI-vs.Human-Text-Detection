@@ -9,7 +9,7 @@ pinned: false
 
 # Project 2 | AI vs. Human Text Detection
 
-This app looks at a piece of writing and estimates whether it is more likely to be human-written or AI-written. It continues my Project 1 machine learning work and adds two Hugging Face language models for Project 2. The original classifiers still make the prediction, and the LLMs help explain the result in plain language.
+This app looks at a piece of writing and estimates whether it is more likely to be human-written or AI-written. It continues my Project 1 machine learning work and adds three Hugging Face language models for Project 2. The original classifiers still make the prediction, and the LLMs help explain the result in plain language.
 
 The app supports pasted text and uploaded `.txt`, `.pdf`, and `.docx` files. After the user chooses a classifier, the app shows the predicted label, AI score, human score, confidence, text statistics, model comparison, and optional LLM explanations.
 
@@ -24,17 +24,19 @@ Dataset labels:
 
 ## What I Added for Project 2
 
-Project 2 required at least two LLMs, so I added two small Hugging Face instruction models:
+Project 2 required at least two LLMs, so I added three small Hugging Face instruction/chat models:
 
 1. `Qwen/Qwen2.5-0.5B-Instruct`
    - Explains the selected classifier result.
 2. `HuggingFaceTB/SmolLM2-360M-Instruct`
    - Gives a second writing-style review.
+3. `TinyLlama/TinyLlama-1.1B-Chat-v1.0`
+   - Explains the same result in plain English for non-technical users.
 
 The LLM section has two modes:
 
 - **Fast: selected LLM** - runs one LLM for a quicker explanation.
-- **Full: compare both LLMs** - runs both LLMs so the explanations can be compared.
+- **Full: compare all LLMs** - runs all three LLMs so the explanations can be compared.
 
 The LLMs only load when the user clicks **Generate LLM explanation**. This keeps the normal prediction flow fast and avoids loading large models before they are needed.
 
@@ -56,6 +58,7 @@ Large language models:
 
 7. Qwen2.5 0.5B Instruct
 8. SmolLM2 360M Instruct
+9. TinyLlama 1.1B Chat
 
 ## Dataset and Features
 
@@ -89,7 +92,7 @@ For demos, I usually start with SVM because it had the strongest saved score.
 2. The app extracts and cleans the text.
 3. The selected classifier predicts whether the writing looks AI-written or human-written.
 4. The app shows the AI score, human score, confidence, text statistics, and side-by-side model comparison.
-5. If the user requests it, one or both LLMs generate a short explanation of the result.
+5. If the user requests it, one selected LLM or all three LLMs generate a short explanation of the result.
 6. The user can download a text report.
 
 The LLM explanation is not used as the final prediction. It is there to help the user understand the classifier output.
@@ -132,7 +135,7 @@ Steps:
    - `reports/`
    - `sample_docs/`
 6. Wait for the build to finish.
-7. Test text input, file upload, classifier prediction, and both LLM explanation modes.
+7. Test text input, file upload, classifier prediction, and both LLM analysis modes.
 
 Public Space link:
 
