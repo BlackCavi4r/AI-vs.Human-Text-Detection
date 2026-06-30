@@ -9,9 +9,9 @@ pinned: false
 
 # AI vs. Human Text Detection
 
-This repository contains my AI vs. Human Text Detection project sequence. Project 1 focused on building and comparing machine learning and deep learning models. Project 2 keeps that original work and adds a working Streamlit app, document upload, Hugging Face LLM explanations, and a public Hugging Face Spaces deployment.
+This project started as my Project 1 classifier for AI vs. human-written text. For Project 2, I kept that work and turned it into a working Streamlit app with document upload, side-by-side model comparison, Hugging Face LLM explanations, and a public Hugging Face Spaces deployment.
 
-The app analyzes a writing sample and estimates whether it looks more human-written or AI-generated. The result is probabilistic, so it should be treated as a helpful signal, not as final proof.
+The app reviews a writing sample and estimates whether it looks more human-written or AI-generated. The result is probability-based, so I treat it as a helpful signal instead of final proof.
 
 Public app: https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
 
@@ -33,9 +33,9 @@ Public app: https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
 - Added three Hugging Face LLMs to explain the classifier result in plain language.
 - Deployed the final app on Hugging Face Spaces.
 
-## Models
+## Model Results
 
-The strongest saved model was SVM, so it is a good starting point for demos.
+The strongest saved result came from SVM, so that is the model I would use first in a demo.
 
 | Model | Accuracy | Precision | Recall | F1 | ROC AUC |
 |---|---:|---:|---:|---:|---:|
@@ -46,9 +46,9 @@ The strongest saved model was SVM, so it is a good starting point for demos.
 | Decision Tree | 0.844 | 0.812 | 0.896 | 0.852 | 0.836 |
 | LSTM | 0.756 | 0.750 | 0.768 | 0.759 | 0.792 |
 
-## LLMs Added in Project 2
+## LLMs Added for Project 2
 
-The LLMs do not make the final prediction. They explain the classifier result so the user can understand the writing signals behind it.
+The LLMs do not make the final prediction. Their job is to explain the classifier result so the user can understand the writing signals behind it.
 
 - `Qwen/Qwen2.5-0.5B-Instruct` - structured explanation of the selected classifier result.
 - `HuggingFaceTB/SmolLM2-360M-Instruct` - second writing-style review.
@@ -72,7 +72,7 @@ The traditional models use TF-IDF features plus writing-style features such as w
 
 ## How the App Works
 
-1. The user pastes text or uploads a document.
+1. A user pastes text or uploads a document.
 2. The app extracts and cleans the text.
 3. The selected classifier predicts whether the text looks AI-written or human-written.
 4. The app shows AI score, human score, confidence, text statistics, and model comparison.
@@ -82,7 +82,7 @@ The traditional models use TF-IDF features plus writing-style features such as w
 ## Run Locally
 
 ```powershell
-cd C:\Users\Usuario\Desktop\ai_human_detection_project
+cd Project2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -103,7 +103,7 @@ The first LLM run can take longer because the model files may need to download a
 
 ## What I Learned
 
-The biggest lesson from this sequence was that prediction and explanation are different. Project 1 helped me compare which classifiers worked best, and Project 2 made the result easier to understand by adding LLM explanations and a web interface. I also learned that AI detection needs to be presented carefully because the output is a probability, not a guaranteed answer.
+The biggest lesson from this sequence was that prediction and explanation are different parts of the problem. Project 1 helped me compare which classifiers worked best, and Project 2 made the result easier to use by adding document upload, model comparison, LLM explanations, and a web interface. I also learned that AI detection needs careful wording because the output is a probability, not a guaranteed answer.
 
 ## Important Note
 

@@ -1,7 +1,7 @@
 # Model Tuning Notes
 
-The traditional machine learning models use `GridSearchCV` with F1-score as the selection metric.
+For the traditional machine learning models, I used `GridSearchCV` and selected the best setup with F1-score.
 
-The deep learning models use a small manual grid because FNN, LSTM, and CNN training is slower on a regular laptop than scikit-learn models. The script tests practical configurations for sequence length, embedding size, hidden units or filters, dropout, learning rate, and epochs. The intended selection metric is validation F1-score, then the selected configuration is saved as the final app model.
+For the deep learning models, I used a smaller manual grid because FNN, LSTM, and CNN training takes longer on my laptop than the scikit-learn models. I tested practical values for sequence length, embedding size, hidden units or filters, dropout, learning rate, and epochs. The selected configuration is based on validation F1-score and then saved for the app.
 
-This keeps the project reproducible while still showing real tuning instead of leaving the deep learning models at random default settings.
+This gives the project a repeatable tuning process without making the training setup heavier than it needs to be for the assignment.
