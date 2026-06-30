@@ -7,73 +7,35 @@ sdk: docker
 pinned: false
 ---
 
-# Project 2 | AI vs. Human Text Detection
+# AI vs. Human Text Detection
 
-This app looks at a piece of writing and estimates whether it is more likely to be human-written or AI-written. It continues my Project 1 machine learning work and adds three Hugging Face language models for Project 2. The original classifiers still make the prediction, and the LLMs help explain the result in plain language.
+This repository contains my AI vs. Human Text Detection project sequence. Project 1 focused on building and comparing machine learning and deep learning models. Project 2 keeps that original work and adds a working Streamlit app, document upload, Hugging Face LLM explanations, and a public Hugging Face Spaces deployment.
 
-The app supports pasted text and uploaded `.txt`, `.pdf`, and `.docx` files. After the user chooses a classifier, the app shows the predicted label, AI score, human score, confidence, text statistics, model comparison, and optional LLM explanations.
+The app analyzes a writing sample and estimates whether it looks more human-written or AI-generated. The result is probabilistic, so it should be treated as a helpful signal, not as final proof.
 
-## Problem
+Public app: https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
 
-AI-generated writing is becoming common in school, work, and online communication. A detector should not be treated as final proof, but it can help a reader compare writing signals and understand why a text may look machine-generated. My goal was to build a practical demo that combines traditional machine learning, deep learning, and LLM explanations in one web app.
+## Project Sequence
 
-Dataset labels:
+**Project 1 foundation**
 
-- `0` = Human-written text
-- `1` = AI-written text
+- Built the AI vs. human text detection pipeline.
+- Trained traditional machine learning models: SVM, Decision Tree, and AdaBoost.
+- Trained deep learning models: FNN, LSTM, and CNN.
+- Compared models using accuracy, precision, recall, F1, and ROC AUC.
+- Saved the trained models, metrics, plots, and project reports.
 
-## What I Added for Project 2
+**Project 2 extension**
 
-Project 2 required at least two LLMs, so I added three small Hugging Face instruction/chat models:
+- Turned the detector into a Streamlit web app.
+- Added direct text input and document upload for TXT, PDF, and DOCX files.
+- Added side-by-side model comparison for the same input text.
+- Added three Hugging Face LLMs to explain the classifier result in plain language.
+- Deployed the final app on Hugging Face Spaces.
 
-1. `Qwen/Qwen2.5-0.5B-Instruct`
-   - Explains the selected classifier result.
-2. `HuggingFaceTB/SmolLM2-360M-Instruct`
-   - Gives a second writing-style review.
-3. `TinyLlama/TinyLlama-1.1B-Chat-v1.0`
-   - Explains the same result in plain English for non-technical users.
+## Models
 
-The LLM section has two modes:
-
-- **Fast: selected LLM** - runs one LLM for a quicker explanation.
-- **Full: compare all LLMs** - runs all three LLMs so the explanations can be compared.
-
-The LLMs only load when the user clicks **Generate LLM explanation**. This keeps the normal prediction flow fast and avoids loading large models before they are needed.
-
-## Models in the App
-
-Traditional machine learning:
-
-1. SVM
-2. Decision Tree
-3. AdaBoost
-
-Deep learning:
-
-4. FNN
-5. LSTM
-6. CNN for text
-
-Large language models:
-
-7. Qwen2.5 0.5B Instruct
-8. SmolLM2 360M Instruct
-9. TinyLlama 1.1B Chat
-
-## Dataset and Features
-
-The training data is stored in `data/training_data/train_data_with_labels.xlsx`.
-
-The traditional models use:
-
-- TF-IDF word and phrase features
-- Linguistic features such as word count, sentence length, vocabulary richness, punctuation ratio, uppercase ratio, digit ratio, and readability
-
-The deep learning models use tokenized word sequences saved with the trained PyTorch model files.
-
-## Saved Results
-
-These are the saved results from `reports/model_comparison.csv`:
+The strongest saved model was SVM, so it is a good starting point for demos.
 
 | Model | Accuracy | Precision | Recall | F1 | ROC AUC |
 |---|---:|---:|---:|---:|---:|
@@ -84,89 +46,65 @@ These are the saved results from `reports/model_comparison.csv`:
 | Decision Tree | 0.844 | 0.812 | 0.896 | 0.852 | 0.836 |
 | LSTM | 0.756 | 0.750 | 0.768 | 0.759 | 0.792 |
 
-For demos, I usually start with SVM because it had the strongest saved score.
+## LLMs Added in Project 2
+
+The LLMs do not make the final prediction. They explain the classifier result so the user can understand the writing signals behind it.
+
+- `Qwen/Qwen2.5-0.5B-Instruct` - structured explanation of the selected classifier result.
+- `HuggingFaceTB/SmolLM2-360M-Instruct` - second writing-style review.
+- `TinyLlama/TinyLlama-1.1B-Chat-v1.0` - plain-English explanation for non-technical users.
+
+The app has two LLM modes:
+
+- **Fast: selected LLM** - runs one selected LLM.
+- **Full: compare all LLMs** - runs all three LLMs for comparison.
+
+## Dataset and Features
+
+The training data is stored in `data/training_data/train_data_with_labels.xlsx`.
+
+Labels:
+
+- `0` = human-written text
+- `1` = AI-written text
+
+The traditional models use TF-IDF features plus writing-style features such as word count, sentence length, vocabulary richness, punctuation ratio, uppercase ratio, digit ratio, and readability. The deep learning models use tokenized text sequences.
 
 ## How the App Works
 
 1. The user pastes text or uploads a document.
 2. The app extracts and cleans the text.
-3. The selected classifier predicts whether the writing looks AI-written or human-written.
-4. The app shows the AI score, human score, confidence, text statistics, and side-by-side model comparison.
-5. If the user requests it, one selected LLM or all three LLMs generate a short explanation of the result.
+3. The selected classifier predicts whether the text looks AI-written or human-written.
+4. The app shows AI score, human score, confidence, text statistics, and model comparison.
+5. The user can generate an LLM explanation.
 6. The user can download a text report.
 
-The LLM explanation is not used as the final prediction. It is there to help the user understand the classifier output.
-
-## How to Run Locally
-
-```bash
-cd ai_human_detection_project
-python -m venv .venv
-```
-
-Windows PowerShell:
+## Run Locally
 
 ```powershell
+cd C:\Users\Usuario\Desktop\ai_human_detection_project
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The first LLM run can take longer because the model files are downloaded and cached.
+The first LLM run can take longer because the model files may need to download and cache.
 
-## Hugging Face Spaces Deployment
+## Main Files
 
-This repository is prepared for a Hugging Face Docker Space that runs the Streamlit app on port `7860`.
-
-Steps:
-
-1. Go to `https://huggingface.co/spaces`.
-2. Create a new Space.
-3. Select **Docker** as the SDK.
-4. Upload or sync this project.
-5. Make sure the Space includes:
-   - `Dockerfile`
-   - `app.py`
-   - `llm_explanations.py`
-   - `project_utils.py`
-   - `requirements.txt`
-   - `README.md`
-   - `models/`
-   - `reports/`
-   - `sample_docs/`
-6. Wait for the build to finish.
-7. Test text input, file upload, classifier prediction, and both LLM analysis modes.
-
-Public Space link:
-
-```text
-https://huggingface.co/spaces/Caviar22/AI-vs-Human-Text-Detection
-```
-
-## Files and Folders
-
-```text
-ai_human_detection_project/
-|-- app.py
-|-- llm_explanations.py
-|-- project_utils.py
-|-- train_models.py
-|-- Dockerfile
-|-- requirements.txt
-|-- requirements-training.txt
-|-- README.md
-|-- models/
-|-- data/
-|-- notebooks/
-|-- reports/
-|-- sample_docs/
-`-- tests/
-```
+- `app.py` - Streamlit app.
+- `project_utils.py` - model loading, preprocessing, document reading, and prediction helpers.
+- `llm_explanations.py` - Hugging Face LLM explanation logic.
+- `train_models.py` - training pipeline from Project 1.
+- `models/` - saved trained models.
+- `reports/` - saved metrics, plots, and comparison files.
+- `sample_docs/` - sample text files for testing.
 
 ## What I Learned
 
-This project helped me see the difference between prediction and explanation. The SVM model gave the strongest classification score, but the LLMs made the result easier to understand for a normal user. I also learned that AI detection is not absolute. The best version of the app is honest about uncertainty: it gives a score, compares models, shows writing signals, and explains why the result may or may not be reliable.
+The biggest lesson from this sequence was that prediction and explanation are different. Project 1 helped me compare which classifiers worked best, and Project 2 made the result easier to understand by adding LLM explanations and a web interface. I also learned that AI detection needs to be presented carefully because the output is a probability, not a guaranteed answer.
 
 ## Important Note
 
-This app is a class project and should not be used as final evidence that a person did or did not use AI. The prediction is probabilistic, and the LLM explanation is only a supporting interpretation of the classifier output.
+This project is for learning and demonstration. AI detection can be wrong, especially on short or heavily edited text. The app should be used as a supporting tool, not as final evidence.
